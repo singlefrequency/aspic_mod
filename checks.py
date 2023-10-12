@@ -177,27 +177,34 @@ def calculate_data():
     potential = Potentials()
     for j in range(len(names)):
         par, phiend, M, dtphi = extract_data(names[j])  
-        print(phiend)
-        print(par)
         phi = np.linspace(min(phiend),max(phiend),10000)
         phiend_calc = []
-                
+        phidt_calc  = []       
         for i in range(len(par)): 
             V_attr = getattr(potential, str('V_')+str(names[j]).upper())
             phiend_calc.append(find_phiend(par[i],M[i],phi,V_attr,names[j],i)[0])
-        print(phiend)
-        print(par)
-        plt.scatter(par,phiend/phiend_calc)
-       # plt.loglog(par,phiend_calc)
+            phidt_calc.append(np.sqrt(V_attr(par[i],M[i],find_phiend(par[i],M[i],phi,V_attr,names[j],i)[0])))
+
+        plt.scatter(par,phiend)
+        plt.plot(par,phiend_calc)
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel(r'$\phi_{\rm ini}$')
         plt.xlabel(r'$p$')
         plt.xlim(min(par),max(par))
-        plt.ylim(0.5,1.5)
         plt.grid()
         plt.savefig('aspic/src/'+str(names[j])+'.pdf', bbox_inches='tight')
-    
+        plt.clf()
+        plt.scatter(par,dtphi)
+        plt.plot(par,phidt_calc)
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.ylabel(r'$\dot{\phi}_{\rm ini}$')
+        plt.xlabel(r'$p$')
+        plt.xlim(min(par),max(par))
+        plt.grid()
+        plt.savefig('aspic/src/'+str(names[j])+'_dt.pdf', bbox_inches='tight')
+        
 def main():
     calculate_data()
     
