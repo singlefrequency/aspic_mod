@@ -173,27 +173,28 @@ def find_phiend(par,M,phi,V,V1,i):
 
 def calculate_data():
     names = ['rchi','lfi','gmlfi','rcmi','rcqi','ni','esi','kmii','hf1i','cwi','rpi','dwi','mhi','rgi','gmssmi','gripi','ai','cnai','cnbi','osti','wri','sfi1','sfi2','sfi4']
-    #names = ['rgi','kmii']
+    #names = ['rchi','lfi','gmlfi','rcmi','rcqi','ni','esi','kmii']
     potential = Potentials()
-    
     for j in range(len(names)):
-
         par, phiend, M, dtphi = extract_data(names[j])  
         print(phiend)
+        print(par)
         phi = np.linspace(min(phiend),max(phiend),10000)
         phiend_calc = []
                 
         for i in range(len(par)): 
             V_attr = getattr(potential, str('V_')+str(names[j]).upper())
             phiend_calc.append(find_phiend(par[i],M[i],phi,V_attr,names[j],i)[0])
-        plt.scatter(par,phiend)
-        plt.loglog(par,phiend_calc)
+        print(phiend)
+        print(par)
+        plt.scatter(par,phiend/phiend_calc)
+       # plt.loglog(par,phiend_calc)
         plt.xscale('log')
         plt.yscale('log')
         plt.ylabel(r'$\phi_{\rm ini}$')
         plt.xlabel(r'$p$')
         plt.xlim(min(par),max(par))
-        plt.ylim(min(phiend),max(phiend))
+        plt.ylim(0.5,1.5)
         plt.grid()
         plt.savefig('aspic/src/'+str(names[j])+'.pdf', bbox_inches='tight')
     
